@@ -1,4 +1,4 @@
-# Learn Terraform - Provision an EKS Cluster
+# Terraform - Provision an EKS Cluster and Deploy Weviate using helm provider
 
 
 
