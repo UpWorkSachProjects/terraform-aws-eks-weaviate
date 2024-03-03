@@ -9,4 +9,5 @@ Steps that need to be followed :-
 
 
 Once you are done testing just remove the infrastructure using
-terraform destroy --auto-approve# terraform-aws-eks-weaviate
+
+terraform destroy --auto-approve
