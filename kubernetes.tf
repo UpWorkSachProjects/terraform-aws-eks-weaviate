@@ -17,8 +17,9 @@ provider "helm" {
   }
 }
 
-resource "helm_release" "nginx" {
+resource "helm_release" "weviate" {
   name       = "weaviate"
+  create_namespace = true
   namespace  = "weaviate"
   repository = "https://weaviate.github.io/weaviate-helm"
   chart      = "weaviate"
