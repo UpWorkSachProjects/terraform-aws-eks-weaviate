@@ -1,6 +1,6 @@
 # Sample workflow to access AWS resources when workflow is tied to branch
 # The workflow Creates static website using aws s3
-name: Terraform-Plan
+name: Terraform-Apply
 
 on:
   workflow_dispatch
@@ -74,7 +74,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
          name: tf.plan
-         path: tf.plan
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
