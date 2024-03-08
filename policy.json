@@ -1,0 +1,24 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Action": "s3:ListBucket",
+        "Resource": "RESOURCE",
+        "Principal": {
+          "AWS": "ARN"              // Need to edit this according to bucket    it will be ARN of iam user created
+        }
+      },
+      {
+        "Effect": "Allow",
+        "Action": [
+          "s3:GetObject",
+          "s3:PutObject"
+        ],
+        "Resource": "RESOURCE/KEY", // Need to edit this according to bucket    arn:aws:s3:::<NAME_OF_BUCKET>/terraform.tfstate
+        "Principal": {
+          "AWS": "ARN"              // Need to edit this according to bucket
+        }
+      }
+    ]
+  }
