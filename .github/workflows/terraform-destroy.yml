@@ -17,7 +17,52 @@ permissions:
   contents: read    # This is required for actions/checkout
 
 jobs:
-  apply:
+  plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::975050058851:role/terraform
+          role-session-name: samplerolesession
+          aws-region: eu-west-2
+        
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+           terraform_version: 1.3
+
+      - name: Terraform Init
+        shell: bash
+        id: init
+        run:
+          terraform init -no-color
+
+      - name: Terraform Validate
+        id: validate
+        shell: bash
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+        run: |
+          terraf`orm plan -out=tf.plan \
+            -input=false \
+            -no-color 
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: tf.plan
+          path: tf.plan
+          retention-days: 30
+          if-no-files-found: error
+
+  destroy:
     # if: github.actor != 'dependabot[bot]' && github.ref == 'refs/heads/main' && github.event_name == 'push'
     name: Terraform Destroy
     runs-on: ubuntu-latest

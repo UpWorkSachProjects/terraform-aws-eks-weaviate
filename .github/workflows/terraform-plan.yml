@@ -54,3 +54,44 @@ jobs:
           path: tf.plan
           retention-days: 30
           if-no-files-found: error
+
+  apply:
+    # if: github.actor != 'dependabot[bot]' && github.ref == 'refs/heads/main' && github.event_name == 'push'
+    name: Terraform Apply
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::975050058851:role/terraform
+          role-session-name: samplerolesession
+          aws-region: eu-west-2
+
+      - name: Download Terraform Plan Artifact
+        uses: actions/download-artifact@v3
+        with:
+         name: tf.plan
+         path: tf.plan
+      
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.3
+
+      - name: Terraform Init
+        shell: bash
+        id: init
+        run:
+          terraform init -no-color
+
+      - name: Terraform Apply
+        id: apply
+        run: |
+          terraform apply -no-color \
+          -compact-warnings \
+          -auto-approve \
+          tf.plan
+                          
