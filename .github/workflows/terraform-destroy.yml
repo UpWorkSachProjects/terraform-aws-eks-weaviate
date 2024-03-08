@@ -3,13 +3,14 @@
 name: Terraform-Destroy
 
 on:
-  push:
-    branches:
-      - main    
+    workflow_dispatch
+#   push:
+#     branches:
+#       - main    
 
-  pull_request:
-    branches:
-      - main
+#   pull_request:
+#     branches:
+#       - main
 
 permissions:
   id-token: write   # This is required for requesting the JWT
