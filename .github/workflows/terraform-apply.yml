@@ -20,8 +20,8 @@ jobs:
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
-          role-to-assume: arn:aws:iam::975050058851:role/terraform
-          role-session-name: samplerolesession
+          role-to-assume: ${{ secrets.AWS_ARN }}
+          role-session-name: terraform
           aws-region: eu-west-2
       
       - name: Setup Terraform
@@ -67,8 +67,8 @@ jobs:
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
-          role-to-assume: arn:aws:iam::975050058851:role/terraform
-          role-session-name: samplerolesession
+          role-to-assume: ${{ secrets.AWS_ARN }}
+          role-session-name: terraform
           aws-region: eu-west-2
 
       - name: Download Terraform Plan Artifact
