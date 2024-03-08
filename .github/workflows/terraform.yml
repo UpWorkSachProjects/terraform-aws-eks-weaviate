@@ -43,7 +43,7 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: |
-          terraform plan -out="tf.plan" \
+          terraform plan -out=tf.plan \
             -input=false \
             -no-color 
 
@@ -51,6 +51,6 @@ jobs:
         uses: actions/upload-artifact@v3.1.2
         with:
           name: tf.plan
-          path: tf.plan"
+          path: tf.plan
           retention-days: 30
           if-no-files-found: error
