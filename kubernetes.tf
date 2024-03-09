@@ -1,10 +1,3 @@
-# data "terraform_remote_state" "eks" {
-#   backend = "local"
-#   config = {
-#     path = "./terraform.tfstate"
-#   }
-# }
-
 provider "helm" {
   kubernetes {
     host                   = module.eks.cluster_endpoint
@@ -17,14 +10,14 @@ provider "helm" {
   }
 }
 
-resource "helm_release" "weviate" {
-  name       = "weaviate"
+resource "helm_release" "qdrant" {
+  name       = "qdrant"
   create_namespace = true
-  namespace  = "weaviate"
-  repository = "https://weaviate.github.io/weaviate-helm"
-  chart      = "weaviate"
+  namespace  = "qdrant"
+  repository = "https://qdrant.to/helm"
+  chart      = "qdrant"
 
   values = [
-    file("${path.module}/values.yaml")
+    file("${path.module}/qdrant.yaml")
   ]
 }
