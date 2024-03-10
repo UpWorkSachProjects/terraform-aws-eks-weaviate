@@ -65,7 +65,7 @@ resource "kubernetes_manifest" "ingress" {
 
 # output the manifest content of the created resource.
 output "content" {
-  value = kubernetes_manifest.ingress.manifest
+  value = kubernetes_manifest.ingress[0].manifest
 }
 
 resource "helm_release" "qdrant" {
