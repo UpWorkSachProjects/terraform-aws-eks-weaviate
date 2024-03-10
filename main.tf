@@ -82,7 +82,7 @@ module "eks" {
   # write_kubeconfig   = true
   # config_output_path = "./"
 
-  workers_additional_policies = [aws_iam_policy.worker_policy.arn]
+  # workers_additional_policies = [aws_iam_policy.worker_policy.arn]
 }
 
 resource "aws_iam_policy" "worker_policy" {
