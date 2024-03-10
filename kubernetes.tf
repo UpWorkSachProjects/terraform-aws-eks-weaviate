@@ -35,4 +35,5 @@ resource "helm_release" "nginx-ingress-controller" {
     value = "LoadBalancer"
   }
 
+  depends_on = [ helm_release.qdrant ]
 }
