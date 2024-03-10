@@ -44,13 +44,23 @@ data "local_file" "ingress" {
 }
 
 # Parse the Kubernetes config file
-data "yamldecode" "kubernetes_config" {
-  input = data.local_file.ingress.content
-}
+# data "yamldecode" "kubernetes_config" {
+#   input = data.local_file.ingress.content
+# }
 
-# Create Kubernetes resource with the manifest
+# # Create Kubernetes resource with the manifest
 resource "kubernetes_manifest" "ingress" {
-  manifest = data.yamldecode.kubernetes_config
+  for_each = {
+    for value in [
+      for yaml in split(
+        "\n---\n",
+        "\n${replace(data.yamldecode.kubernetes_config, "/(?m)^---[[:blank:]]*(#.*)?$/", "---")}\n"
+      ) :
+      yamldecode(data.local_file.ingress.content)
+      if trimspace(replace(yaml, "/(?m)(^[[:blank:]]*(#.*)?$)+/", "")) != ""
+    ] : "${value["kind"]}--${value["metadata"]["name"]}" => value
+  }
+  manifest = each.value
 }
 
 # output the manifest content of the created resource.
