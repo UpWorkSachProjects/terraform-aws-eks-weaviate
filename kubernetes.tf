@@ -54,9 +54,9 @@ resource "kubernetes_manifest" "ingress" {
     for value in [
       for yaml in split(
         "\n---\n",
-        "\n${replace(data.yamldecode.kubernetes_config, "/(?m)^---[[:blank:]]*(#.*)?$/", "---")}\n"
+        "\n${replace(data.local_file.ingress.content, "/(?m)^---[[:blank:]]*(#.*)?$/", "---")}\n"
       ) :
-      yamldecode(data.local_file.ingress.content)
+      yamldecode(yaml)
       if trimspace(replace(yaml, "/(?m)(^[[:blank:]]*(#.*)?$)+/", "")) != ""
     ] : "${value["kind"]}--${value["metadata"]["name"]}" => value
   }
