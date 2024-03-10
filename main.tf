@@ -79,6 +79,13 @@ module "eks" {
     }
   }
 
+  aws_auth_users = [ 
+    {
+      userarn  = "arn:aws:iam::975050058851:user/gritik95"
+      username = "gritik95"
+      groups   = ["system:masters"]
+    }, 
+  ]
   # write_kubeconfig   = true
   # config_output_path = "./"
 
