@@ -94,4 +94,10 @@ jobs:
           -compact-warnings \
           -auto-approve \
           tf.plan
+      
+      # - name: deploy ingress using kubectl
+      #   id: deploy_ingress
+      #   run: |
+      #     export KUBECONFIG=${PWD}/kubeconfig_my-cluster
+      #     kubectl apply -f ingress-nginx.yaml
                           

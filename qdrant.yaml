@@ -17,7 +17,7 @@ env: {}
 # checks - Readiness and liveness checks can only be enabled for either http (REST) or grpc (multiple checks not supported)
 # grpc checks are only available from k8s 1.24+ so as of per default we check http
 service:
-  type: LoadBalancer
+  type: ClusterIP
   additionalLabels: {}
   loadBalancerIP: ""
   loadBalancerSourceRanges: []
@@ -42,7 +42,6 @@ service:
 
 ingress:
   enabled: true
-  additionalLabels: {}
   annotations: 
     kubernetes.io/ingress.class: alb
   hosts:
@@ -198,4 +197,3 @@ additionalVolumes: []
 additionalVolumeMounts: []
 # - name: volumeName
 #   mountPath: "/mount/path"
-

@@ -78,8 +78,19 @@ module "eks" {
       desired_size = 2
     }
   }
+
+  # write_kubeconfig   = true
+  # config_output_path = "./"
+
+  workers_additional_policies = [aws_iam_policy.worker_policy.arn]
 }
 
+resource "aws_iam_policy" "worker_policy" {
+  name        = "iam-worker-policy"
+  description = "Worker policy"
+
+  policy = file("iam-policy.json")
+}
 
 # https://aws.amazon.com/blogs/containers/amazon-ebs-csi-driver-is-now-generally-available-in-amazon-eks-add-ons/ 
 data "aws_iam_policy" "ebs_csi_policy" {
@@ -95,6 +106,7 @@ module "irsa-ebs-csi" {
   provider_url                  = module.eks.oidc_provider
   role_policy_arns              = [data.aws_iam_policy.ebs_csi_policy.arn]
   oidc_fully_qualified_subjects = ["system:serviceaccount:kube-system:ebs-csi-controller-sa"]
+  depends_on = [module.eks]
 }
 
 resource "aws_eks_addon" "ebs-csi" {
@@ -107,4 +119,3 @@ resource "aws_eks_addon" "ebs-csi" {
     "terraform" = "true"
   }
 }
-
