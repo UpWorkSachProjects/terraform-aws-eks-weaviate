@@ -38,10 +38,10 @@ provider "kubernetes" {
 }
 
 # Read a Kubernetes config file
-data "local_file" "ingress" {
-  filename = "ingress.yaml"
-  depends_on = [aws_eks_addon.ebs-csi]
-}
+# data "local_file" "ingress" {
+#   filename = "ingress.yaml"
+#   depends_on = [aws_eks_addon.ebs-csi]
+# }
 
 # Parse the Kubernetes config file
 # data "yamldecode" "kubernetes_config" {
@@ -54,7 +54,7 @@ resource "kubernetes_manifest" "ingress" {
     for value in [
       for yaml in split(
         "\n---\n",
-        "\n${replace(data.local_file.ingress.content, "/(?m)^---[[:blank:]]*(#.*)?$/", "---")}\n"
+        "\n${replace(file("${path.module}/ingress.yaml"), "/(?m)^---[[:blank:]]*(#.*)?$/", "---")}\n"
       ) :
       yamldecode(yaml)
       if trimspace(replace(yaml, "/(?m)(^[[:blank:]]*(#.*)?$)+/", "")) != ""
