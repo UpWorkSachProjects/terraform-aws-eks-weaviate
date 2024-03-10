@@ -21,7 +21,7 @@ resource "helm_release" "qdrant" {
     file("${path.module}/qdrant.yaml")
   ]
   
-  depends_on = [kubernetes_manifest.ingress]
+  depends_on = [ helm_release.nginx-ingress-controller ]
 }
 
 resource "helm_release" "nginx-ingress-controller" {
@@ -34,6 +34,4 @@ resource "helm_release" "nginx-ingress-controller" {
     name  = "service.type"
     value = "LoadBalancer"
   }
-
-  depends_on = [ helm_release.qdrant ]
 }

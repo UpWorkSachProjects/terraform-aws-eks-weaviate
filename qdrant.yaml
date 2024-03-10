@@ -18,11 +18,11 @@ env: {}
 # grpc checks are only available from k8s 1.24+ so as of per default we check http
 service:
   type: ClusterIP
-  additionalLabels: {}
-  loadBalancerIP: ""
-  loadBalancerSourceRanges: []
-  annotations:
-    service.beta.kubernetes.io/aws-load-balancer-type: "application"
+  # additionalLabels: {}
+  # loadBalancerIP: ""
+  # loadBalancerSourceRanges: []
+  # annotations:
+  #   service.beta.kubernetes.io/aws-load-balancer-type: "application"
   ports:
     - name: http
       port: 6333
@@ -43,7 +43,9 @@ service:
 ingress:
   enabled: true
   annotations: 
-    kubernetes.io/ingress.class: alb
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
   hosts:
     - paths:
         - path: /
