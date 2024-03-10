@@ -58,7 +58,7 @@ resource "kubernetes_manifest" "ingress" {
       ) :
       yamldecode(yaml)
       if trimspace(replace(yaml, "/(?m)(^[[:blank:]]*(#.*)?$)+/", "")) != ""
-    ] : "${value["kind"]}--${value["metadata"]["name"]}" => value
+    ] : "${value["kind"]}--${value["metadata"]["annotations"]}" => value
   }
   manifest = each.value
 }
