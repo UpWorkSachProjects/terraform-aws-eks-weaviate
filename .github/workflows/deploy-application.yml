@@ -61,6 +61,18 @@ jobs:
       - name: Update kube config
         run: aws eks update-kubeconfig --name ${{ inputs.cluster_name }} --region eu-west-2
 
+      # Replace the variables in deployment.yaml
+      - name: Replace variables in deployment.yaml
+        shell: bash
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ env.ECR_REPO_NAME }}
+          IMAGE_TAG: ${{ inputs.image_tag }}
+        run: |
+          find Kubernetes/ -type f | xargs sed -i "s|\$ECR_REGISTRY|$ECR_REGISTRY|g"
+          find Kubernetes/ -type f | xargs sed -i "s|\$ECR_REPOSITORY|$ECR_REPOSITORY|g"
+          find Kubernetes/ -type f | xargs sed -i "s|\$IMAGE_TAG|$IMAGE_TAG|g"
+
       - name: Deploy to EKS
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
