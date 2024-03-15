@@ -24,8 +24,8 @@ FROM base as build
 RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential node-gyp pkg-config python-is-python3
 
-# Install node modules
-COPY --link package.json yarn.lock .yarnrc.yml ./
+# Install node modules yarn.lock
+COPY --link package.json  .yarnrc.yml ./
 RUN yarn install --immutable
 
 # Copy application code
