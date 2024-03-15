@@ -60,8 +60,6 @@ module "eks" {
   vpc_id                         = module.vpc.vpc_id
   subnet_ids                     = module.vpc.private_subnets
   cluster_endpoint_public_access = true
-  # To add the current caller identity as an administrator
-  # enable_cluster_creator_admin_permissions = true
 
   eks_managed_node_group_defaults = {
     ami_type = "AL2_x86_64"
@@ -78,23 +76,6 @@ module "eks" {
       desired_size = 2
     }
   }
-  # write_kubeconfig   = true
-  # config_output_path = "./"
-
-  # workers_additional_policies = [aws_iam_policy.worker_policy.arn]
-}
-
-module "eks_auth" {
-  source = "aidanmelen/eks-auth/aws"
-  eks    = module.eks
-
-  map_users = [
-    {
-      userarn  = "arn:aws:iam::975050058851:user/gritik95"
-      username = "gritik95"
-      groups   = ["system:masters"]
-    },
-  ]
 }
 
 resource "aws_iam_policy" "worker_policy" {

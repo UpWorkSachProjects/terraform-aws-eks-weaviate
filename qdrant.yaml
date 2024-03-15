@@ -48,7 +48,7 @@ ingress:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
   hosts:
     - paths:
-        - path: /
+        - path: /qdrant
           pathType: Prefix
           servicePort: 6333
   tls: []
