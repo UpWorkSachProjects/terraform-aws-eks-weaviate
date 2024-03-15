@@ -12,10 +12,6 @@ permissions:
   id-token: write   # This is required for requesting the JWT
   contents: read    # This is required for actions/checkout
 
-outputs:
-  image_tag: ${{ steps.build-publish.outputs.image_tag }}
-  full_image: ${{ steps.build-publish.outputs.full_image }}
-
 jobs:
   build__pushimage:
     name: Build & Push Docker Image
