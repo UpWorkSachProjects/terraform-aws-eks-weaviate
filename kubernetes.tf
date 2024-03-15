@@ -11,17 +11,17 @@ provider "helm" {
 }
 
 resource "helm_release" "qdrant" {
-  name       = "qdrant"
+  name             = "qdrant"
   create_namespace = true
-  namespace  = "qdrant"
-  repository = "https://qdrant.to/helm"
-  chart      = "qdrant"
+  namespace        = "qdrant"
+  repository       = "https://qdrant.to/helm"
+  chart            = "qdrant"
 
   values = [
     file("${path.module}/qdrant.yaml")
   ]
-  
-  depends_on = [ helm_release.nginx-ingress-controller ]
+
+  depends_on = [helm_release.nginx-ingress-controller]
 }
 
 resource "helm_release" "nginx-ingress-controller" {

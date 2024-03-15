@@ -9,6 +9,6 @@ variable "region" {
 
 variable "repository_name" {
   description = "Name of the container registry"
-  type = string
-  default = ""
+  type        = string
+  default     = ""
 }
