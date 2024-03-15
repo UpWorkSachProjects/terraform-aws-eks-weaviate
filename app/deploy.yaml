@@ -7,6 +7,8 @@ spec:
   ports:
     - targetPort: 3000
       port: 3000
+  selector:
+    name: flyio-app
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -34,6 +36,7 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  name: flyio-ingress
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /
