@@ -7,6 +7,9 @@ on:
         description: Tag to apply to images.
         type: string
         default: latest
+      cluster_name:
+        description: Name of the EKS Cluster
+        type: string
 
 permissions:
   id-token: write   # This is required for requesting the JWT
@@ -54,6 +57,14 @@ jobs:
         run: |
           docker build app -f app/Dockerfile -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
           docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-          echo "IMAGE $IMAGE_TAG is pushed to $ECR_REGISTRY/$ECR_REPOSITORY"
-          echo "image_tag=$IMAGE_TAG" 
-          echo "full_image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+      - name: Update kube config
+        run: aws eks update-kubeconfig --name ${{ inputs.cluster_name }} --region eu-west-2
+
+      - name: Deploy to EKS
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ env.ECR_REPO_NAME }}
+          IMAGE_TAG: ${{ inputs.image_tag }}
+        run: |
+          kubectl apply -f app/deploy.yaml

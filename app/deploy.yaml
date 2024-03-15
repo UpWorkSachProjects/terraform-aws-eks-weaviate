@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: app_lb
+  labels:
+    app: flyio
+spec:
+  type: LoadBalancer
+  selector:
+    app: flyio
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flyio-app
+  labels:
+    app: flyio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flyio
+  template:
+    metadata:
+      labels:
+        app: flyio
+    spec:
+      containers:
+      - name: sample_app
+        # The $REPOSITORY_URI and $IMAGE_TAG placeholders will be replaced by actual values supplied by the build action in your workflow
+        image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        ports:
+        - containerPort: 3000
