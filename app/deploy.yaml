@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: app_lb
+  name: app-lb
   labels:
     app: flyio
 spec:
@@ -30,7 +30,7 @@ spec:
         app: flyio
     spec:
       containers:
-      - name: sample_app
+      - name: sample-app
         # The $REPOSITORY_URI and $IMAGE_TAG placeholders will be replaced by actual values supplied by the build action in your workflow
         image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         ports:
