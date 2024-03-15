@@ -69,9 +69,9 @@ jobs:
           ECR_REPOSITORY: ${{ env.ECR_REPO_NAME }}
           IMAGE_TAG: ${{ inputs.image_tag }}
         run: |
-          find Kubernetes/ -type f | xargs sed -i "s|\$ECR_REGISTRY|$ECR_REGISTRY|g"
-          find Kubernetes/ -type f | xargs sed -i "s|\$ECR_REPOSITORY|$ECR_REPOSITORY|g"
-          find Kubernetes/ -type f | xargs sed -i "s|\$IMAGE_TAG|$IMAGE_TAG|g"
+          find app/ -type f | xargs sed -i "s|\$ECR_REGISTRY|$ECR_REGISTRY|g"
+          find app/ -type f | xargs sed -i "s|\$ECR_REPOSITORY|$ECR_REPOSITORY|g"
+          find app/ -type f | xargs sed -i "s|\$IMAGE_TAG|$IMAGE_TAG|g"
 
       - name: Deploy to EKS
         env:
