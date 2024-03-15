@@ -17,6 +17,7 @@ ARG YARN_VERSION=3.5.0
 RUN corepack enable && \
     yarn set version ${YARN_VERSION}
 
+
 # Throw-away build stage to reduce size of final image
 FROM base as build
 
@@ -25,7 +26,7 @@ RUN apt-get update -qq && \
     apt-get install --no-install-recommends -y build-essential node-gyp pkg-config python-is-python3
 
 # Install node modules
-# COPY --link package.json yarn.lock .yarnrc.yml ./
+COPY --link package.json yarn.lock .yarnrc.yml ./
 RUN yarn install --immutable
 
 # Copy application code
@@ -36,6 +37,7 @@ RUN yarn build
 
 # Remove development dependencies
 RUN yarn install
+
 
 # Final stage for app image
 FROM base
