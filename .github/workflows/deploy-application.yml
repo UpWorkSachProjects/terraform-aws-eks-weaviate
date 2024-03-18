@@ -80,3 +80,8 @@ jobs:
           IMAGE_TAG: ${{ inputs.image_tag }}
         run: |
           kubectl apply -f app/deploy.yaml
+
+      - name: What IP
+        run: |
+          sleep 15
+          kubectl get svc | grep nginx-controller | cut -d " " -f28
