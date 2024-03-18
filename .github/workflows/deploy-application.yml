@@ -84,4 +84,4 @@ jobs:
       - name: What IP
         run: |
           sleep 15
-          kubectl get svc | grep nginx-controller | cut -d " " -f28
+          kubectl get svc | grep "nginx-ingress-controller" | cut -d " " -f28
