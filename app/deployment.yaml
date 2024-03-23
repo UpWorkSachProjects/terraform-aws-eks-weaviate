@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: flyio
+  name: $USERNAME-service
   labels:
-    app: flyio
+    app: $USERNAME-app
 spec:
   type: ClusterIP
   ports:
@@ -12,29 +12,28 @@ spec:
       port: 3000
       protocol: TCP
   selector:
-    app: flyio
+    app: $USERNAME-app
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: flyio
+  name: $USERNAME-deployment
   labels:
-    app: flyio
+    app: $USERNAME-app
 spec:
   replicas: 1
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      app: flyio
+      app: $USERNAME-app
   template:
     metadata:
       labels:
-        app: flyio
-      name: flyio
+        app: $USERNAME-app
     spec:
       containers:
-      - name: flyio
+      - name: $USERNAME-app
         # The $REPOSITORY_URI and $IMAGE_TAG placeholders will be replaced by actual values supplied by the build action in your workflow
         image: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         ports:
@@ -45,9 +44,9 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: flyio
+  name: $USERNAME-ingress
   labels:
-    app: flyio
+    app: $USERNAME-app
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
@@ -58,8 +57,8 @@ spec:
       paths:
       - backend:
           service:
-            name: flyio
+            name: $USERNAME-service
             port:
               number: 3000
-        path: /app
+        path: /$USERNAME
         pathType: Prefix

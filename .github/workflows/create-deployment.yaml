@@ -1,0 +1,71 @@
+name: Create new deployment
+
+on:
+  repository_dispatch:
+    types: [new-user-signup]
+
+permissions:
+  id-token: write   # This is required for requesting the JWT
+  contents: read    # This is required for actions/checkout
+
+jobs:
+  new_deployment:
+    name: Create New User Deployement
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git clone the repository
+        uses: actions/checkout@v4
+
+      - name: configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: ${{ secrets.AWS_ARN }}
+          role-session-name: terraform
+          aws-region: eu-west-2
+
+      - name: Extract ECR name from repository name
+        shell: bash
+        run: |
+          set -eux
+          # lowercase the name
+          repo="${GITHUB_REPOSITORY,,}"
+
+          # replace / with _
+          echo "ECR_REPO_NAME=${repo//\//_}" >> $GITHUB_ENV
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        with:
+          registries: ${{ secrets.AWS_ACCOUNT_ID }}
+          mask-password: "true" # see: https://github.com/aws-actions/amazon-ecr-login#docker-credentials
+
+      - name: Update kube config
+        run: aws eks update-kubeconfig --name ${{ github.event.client_payload.cluster_name }} --region eu-west-2
+
+      # Replace the variables in deployment.yaml
+      - name: Replace variables in deployment.yaml
+        shell: bash
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ env.ECR_REPO_NAME }}
+          IMAGE_TAG: ${{ github.event.client_payload.image_tag }}
+          USERNAME: ${{ github.event.client_payload.username }}
+        run: |
+          find app/ -type f | xargs sed -i "s|\$ECR_REGISTRY|$ECR_REGISTRY|g"
+          find app/ -type f | xargs sed -i "s|\$ECR_REPOSITORY|$ECR_REPOSITORY|g"
+          find app/ -type f | xargs sed -i "s|\$IMAGE_TAG|$IMAGE_TAG|g"
+          find app/ -type f | xargs sed -i "s|\$USERNAME|$USERNAME|g"
+
+      - name: Deploy to EKS
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ env.ECR_REPO_NAME }}
+          IMAGE_TAG: ${{ github.event.client_payload.image_tag }}
+        run: |
+          kubectl apply -f app/deployment.yaml
+
+      - name: What IP
+        run: |
+          sleep 15
+          kubectl get svc | grep "nginx-ingress-controller" | cut -d " " -f28

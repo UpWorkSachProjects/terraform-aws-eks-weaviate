@@ -1,4 +1,4 @@
-data "aws_caller_identity" "current" {}
+# data "aws_caller_identity" "current" {}
 
 # tfsec:ignore:aws-ecr-repository-customer-key
 resource "aws_ecr_repository" "repository" {
